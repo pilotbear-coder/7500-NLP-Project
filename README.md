@@ -3,6 +3,8 @@
 **Course:** NLP 7500 — Natural Language Processing | Northeastern University  
 **Author:** Michael Dong (`dong.mic@northeastern.edu`) | Group 14
 
+https://github.com/pilotbear-coder/7500-NLP-Project/tree/main
+
 ---
 
 ## Project Overview
