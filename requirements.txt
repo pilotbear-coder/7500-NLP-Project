@@ -1,0 +1,18 @@
+# Deep Learning & NLP
+torch>=2.2.0
+transformers>=4.38.0
+datasets>=2.18.0
+spacy>=3.7.0
+gensim>=4.3.0
+
+# Machine Learning & Core Data Science
+scikit-learn>=1.4.0
+numpy>=1.26.0
+pandas>=2.2.0
+
+# Visualization
+matplotlib>=3.8.0
+seaborn>=0.13.0
+
+# Environment
+jupyter>=1.0.0
