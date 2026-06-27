@@ -16,6 +16,10 @@ Concepts demonstrated:
 import re
 import time
 import numpy as np
+
+# ── Confirmed dataset field names (verified against HuggingFace dataset cards) ──
+# stanfordnlp/sst2  → text field: 'sentence' | label: 0/1
+# SetFit/sst5       → text field: 'text'     | label: 0-4 | extra: 'label_text'
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -94,6 +98,39 @@ def simple_tokenize(text: str) -> list[str]:
 
 def tokenize_corpus(texts: list[str]) -> list[list[str]]:
     return [simple_tokenize(t) for t in texts]
+
+
+# ════════════════════════════════════════════════════════════════════════════
+# 2b. TEXT CLEANING  (run before tokenisation)
+# ════════════════════════════════════════════════════════════════════════════
+
+def clean_text(text: str, for_bert: bool = False) -> str:
+    """
+    Clean a single SST sentence before tokenisation.
+
+    Issues addressed (discovered in 01_eda.ipynb):
+      - Trailing/leading whitespace (common in SST-2 'sentence' field)
+      - PTB bracket tokens: -lrb- → (, -rrb- → )
+      - Split contractions: "do n't" → "don't", "it 's" → "it's"
+      - Multiple internal spaces
+
+    for_bert=True: only strip whitespace — BERT's WordPiece tokeniser
+    handles PTB-style text natively (pre-training used the same conventions).
+    """
+    if for_bert:
+        return text.strip()
+
+    text = text.strip()
+    text = re.sub(r'-lrb-', '(', text, flags=re.IGNORECASE)
+    text = re.sub(r'-rrb-', ')', text, flags=re.IGNORECASE)
+    text = re.sub(r" n 't", "n't", text)
+    text = re.sub(r" 's",   "'s",  text)
+    text = re.sub(r" 're",  "'re", text)
+    text = re.sub(r" 've",  "'ve", text)
+    text = re.sub(r" 'll",  "'ll", text)
+    text = re.sub(r" 'd",   "'d",  text)
+    text = re.sub(r'\s+', ' ', text)
+    return text
 
 
 # ════════════════════════════════════════════════════════════════════════════
@@ -268,6 +305,11 @@ def run_experiment(version: int = 2,
     # ── Step 1: Load ────────────────────────────────────────────────────────
     train_texts, train_labels, val_texts, val_labels, label_names = load_sst(version)
     n_classes = len(label_names)
+
+    # ── Step 1b: Clean ──────────────────────────────────────────────────────
+    print("\n[0/4] Cleaning text (PTB brackets, contractions, whitespace)...")
+    train_texts = [clean_text(t) for t in train_texts]
+    val_texts   = [clean_text(t) for t in val_texts]
 
     # ── Step 2-3: TF-IDF ────────────────────────────────────────────────────
     print("\n[1/4] Building TF-IDF features...")
