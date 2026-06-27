@@ -181,8 +181,8 @@ sentiment-analysis-evolution/
 
 ```bash
 # Clone the repository
-git clone https://github.com/<your-username>/sentiment-analysis-evolution.git
-cd sentiment-analysis-evolution
+git clone https://github.com/pilotbear-coder/7500-NLP-Project.git
+cd 7500-NLP-Project
 
 # Create a virtual environment
 python -m venv venv
